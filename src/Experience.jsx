@@ -28,19 +28,22 @@ const Expirence = () => {
     <>
       <div className="h-screen w-screen">
         <div className=" absolute  z-10 top-0 mt-12 ml-12">
-          <input
-            type="file"
-            onChange={handleFileUpload}
-            accept=".glb"
-            className="h-48 w-48 border rounded-lg border-gray-400 ring-gray-500"
-          />
+          <label className="h-48 w-48 border border-gray-400 rounded-lg ring-gray-500 flex items-center justify-center text-gray-600 cursor-pointer">
+            Click to upload model
+            <input
+              type="file"
+              onChange={handleFileUpload}
+              accept=".glb,.gltf"
+              className="hidden"
+            />
+          </label>
         </div>
         <Canvas camera={{ position: [-3, 2, 4] }}>
           <ambientLight intensity={0.5} />
           <Environment preset="city" />
           <OrbitControls makeDefault />
 
-          <Car file={file} />
+            <Car file={file} />
           <Shadow scale={[5, 8, 1]} />
           <Grid infiniteGrid fadeDistance={30} />
         </Canvas>

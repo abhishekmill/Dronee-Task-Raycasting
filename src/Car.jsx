@@ -1,8 +1,9 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { Html, Line, Plane, useGLTF } from "@react-three/drei";
+import { Html, Line, Plane, Stage, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { MeshBVH } from "three-mesh-bvh";
 
 export function Car({ file, props }) {
   const { nodes, materials } = useGLTF("/car.glb");
@@ -16,7 +17,6 @@ export function Car({ file, props }) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
-  // Click = add red dot
   const handleClick = useCallback(
     (event) => {
       const rect = gl.domElement.getBoundingClientRect();
@@ -37,7 +37,6 @@ export function Car({ file, props }) {
     [camera, gl]
   );
 
-  // Hover = update blue dot
   const handleMouseMove = useCallback(
     (event) => {
       const rect = gl.domElement.getBoundingClientRect();
@@ -88,7 +87,15 @@ export function Car({ file, props }) {
       const loader = new GLTFLoader();
       loader.load(
         URL.createObjectURL(file),
-        (gltf) => setModel(gltf.scene),
+        (gltf) => {
+          gltf.scene.traverse((child) => {
+            if (child.isMesh && child.geometry) {
+              child.geometry.boundsTree = new MeshBVH(child.geometry);
+            }
+          });
+          setModel(gltf.scene);
+        },
+
         undefined,
         (error) => console.error("Error loading model:", error.message)
       );
@@ -97,7 +104,18 @@ export function Car({ file, props }) {
     console.log(dots);
   }, [file]);
 
-  const { scene } = useGLTF("/car.glb");
+  useEffect(() => {
+    Object.values(nodes).forEach((node) => {
+      if (node.isMesh && node.geometry) {
+        node.geometry.boundsTree = new MeshBVH(node.geometry);
+      }
+    });
+  }, [nodes]);
+
+  useEffect(() => {
+    setDots([]);
+  }, [model]);
+
   return (
     <>
       {/* Clicked Dots */}
