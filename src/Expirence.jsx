@@ -2,6 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import React, { useState } from "react";
 import Model from "./Model";
 import {
+  Box,
   Environment,
   GizmoHelper,
   Grid,
@@ -42,7 +43,9 @@ const Expirence = () => {
           <Car />
           <Shadow scale={[5, 8, 1]} />
           <Grid infiniteGrid fadeDistance={30} />
-          <GizmoHelper />
+          <GizmoHelper>
+            <Box></Box>
+          </GizmoHelper>
         </Canvas>
       </div>
     </>

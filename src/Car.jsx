@@ -3,7 +3,7 @@ import { Html, Line, Plane, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 
-export function Car(props) {
+export function Car({ file, props }) {
   const { nodes, materials } = useGLTF("/car.glb");
   const groupRef = useRef();
   const { camera, gl } = useThree();
@@ -51,7 +51,6 @@ export function Car(props) {
     [camera, gl]
   );
 
-  // Add listeners once
   useEffect(() => {
     const canvas = gl.domElement;
     canvas.addEventListener("click", handleClick);
@@ -74,6 +73,23 @@ export function Car(props) {
 
   const [hidden, set] = useState();
 
+  const [model, setModel] = useState(null);
+
+  useEffect(() => {
+    if (file) {
+      const loader = new GLTFLoader();
+      loader.load(
+        URL.createObjectURL(file),
+        (gltf) => setModel(gltf.scene),
+        undefined,
+        (error) => console.error("Error loading model:", error.message)
+      );
+    }
+
+    console.log(dots);
+  }, [file]);
+
+  const { scene } = useGLTF("/car.glb");
   return (
     <>
       {/* Clicked Dots */}
@@ -133,39 +149,45 @@ export function Car(props) {
           position={[0, -0.3, 0]}
           scale={10}
         />
-
-        <group ref={groupRef} scale={0.013} {...props} dispose={null}>
-          {renderMesh(
-            nodes.Lamborghini_Aventador_Body.geometry,
-            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-            "body"
-          )}
-          {renderMesh(
-            nodes.Lamborghini_Aventador_Glass.geometry,
-            materials._Lamborghini_AventadorLamborghini_Aventador_GlassSG,
-            "glass"
-          )}
-          {renderMesh(
-            nodes.Lamborghini_Aventador_Wheel_FL.geometry,
-            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-            "wheelFL"
-          )}
-          {renderMesh(
-            nodes.Lamborghini_Aventador_Wheel_FR.geometry,
-            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-            "wheelFR"
-          )}
-          {renderMesh(
-            nodes.Lamborghini_Aventador_Wheel_RL.geometry,
-            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-            "wheelRL"
-          )}
-          {renderMesh(
-            nodes.Lamborghini_Aventador_Wheel_RR.geometry,
-            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-            "wheelRR"
-          )}
-        </group>
+        {model ? (
+          <group scale={2}>
+            {" "}
+            <primitive object={model} />{" "}
+          </group>
+        ) : (
+          <group ref={groupRef} scale={0.013} {...props} dispose={null}>
+            {renderMesh(
+              nodes.Lamborghini_Aventador_Body.geometry,
+              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+              "body"
+            )}
+            {renderMesh(
+              nodes.Lamborghini_Aventador_Glass.geometry,
+              materials._Lamborghini_AventadorLamborghini_Aventador_GlassSG,
+              "glass"
+            )}
+            {renderMesh(
+              nodes.Lamborghini_Aventador_Wheel_FL.geometry,
+              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+              "wheelFL"
+            )}
+            {renderMesh(
+              nodes.Lamborghini_Aventador_Wheel_FR.geometry,
+              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+              "wheelFR"
+            )}
+            {renderMesh(
+              nodes.Lamborghini_Aventador_Wheel_RL.geometry,
+              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+              "wheelRL"
+            )}
+            {renderMesh(
+              nodes.Lamborghini_Aventador_Wheel_RR.geometry,
+              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+              "wheelRR"
+            )}
+          </group>
+        )}
       </group>
     </>
   );
