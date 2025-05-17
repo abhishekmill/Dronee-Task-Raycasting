@@ -11,7 +11,7 @@ import {
 } from "@react-three/drei";
 import { useControls } from "leva";
 import * as THREE from "three";
-import { Car } from "./Car";
+import { Car } from "./RaycastingModel";
 import Navbar from "./Navbar";
 import { Tesla } from "./Tesla";
 
