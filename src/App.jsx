@@ -1,5 +1,5 @@
 import React from "react";
-import Expirence from "./Expirence";
+import Expirence from "./Experience";
 import FizzBuzzList from "../FizzBuzzList";
 import TypewritterEffect from "./TypewritterEffect";
 import Box from "./Box";

@@ -27,25 +27,22 @@ const Expirence = () => {
   return (
     <>
       <div className="h-screen w-screen">
-        {/* <div className=" absolute  z-10 top-0 mt-12 ml-12">
+        <div className=" absolute  z-10 top-0 mt-12 ml-12">
           <input
             type="file"
             onChange={handleFileUpload}
             accept=".glb"
             className="h-48 w-48 border rounded-lg border-gray-400 ring-gray-500"
           />
-        </div> */}
+        </div>
         <Canvas camera={{ position: [-3, 2, 4] }}>
           <ambientLight intensity={0.5} />
           <Environment preset="city" />
           <OrbitControls makeDefault />
 
-          <Car />
+          <Car file={file} />
           <Shadow scale={[5, 8, 1]} />
           <Grid infiniteGrid fadeDistance={30} />
-          <GizmoHelper>
-            <Box></Box>
-          </GizmoHelper>
         </Canvas>
       </div>
     </>

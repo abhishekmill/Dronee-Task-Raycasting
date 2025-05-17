@@ -2,10 +2,12 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import { Html, Line, Plane, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export function Car({ file, props }) {
   const { nodes, materials } = useGLTF("/car.glb");
   const groupRef = useRef();
+  const dynamicRef = useRef();
   const { camera, gl } = useThree();
 
   const [dots, setDots] = useState([]);
@@ -22,7 +24,10 @@ export function Car({ file, props }) {
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObject(groupRef.current, true);
+      const intersects = raycaster.intersectObjects(
+        [groupRef.current, dynamicRef.current].filter(Boolean),
+        true
+      );
 
       if (intersects.length > 0) {
         const point = intersects[0].point;
@@ -40,7 +45,10 @@ export function Car({ file, props }) {
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObject(groupRef.current, true);
+      const intersects = raycaster.intersectObjects(
+        [groupRef.current, dynamicRef.current].filter(Boolean), // avoid null
+        true
+      );
 
       if (intersects.length > 0) {
         setHoverDot(intersects[0].point.clone());
@@ -53,10 +61,10 @@ export function Car({ file, props }) {
 
   useEffect(() => {
     const canvas = gl.domElement;
-    canvas.addEventListener("click", handleClick);
+    canvas.addEventListener("dblclick", handleClick);
     canvas.addEventListener("mousemove", handleMouseMove);
     return () => {
-      canvas.removeEventListener("click", handleClick);
+      canvas.removeEventListener("dblclick", handleClick);
       canvas.removeEventListener("mousemove", handleMouseMove);
     };
   }, [handleClick, handleMouseMove]);
@@ -94,7 +102,7 @@ export function Car({ file, props }) {
     <>
       {/* Clicked Dots */}
       {dots.map((pos, i) => (
-        <>
+        <React.Fragment key={i}>
           <mesh key={i} position={pos}>
             <sphereGeometry args={[0.05, 8, 8]} />
             <meshStandardMaterial color="red" />
@@ -121,9 +129,10 @@ export function Car({ file, props }) {
               {" "}
               <h1>X:{pos.x.toFixed(2)}</h1>
               <h1>Y:{pos.y.toFixed(2)}</h1>
+              <h1>Z:{pos.z.toFixed(2)}</h1>
             </div>
           </Html>
-        </>
+        </React.Fragment>
       ))}
       {/* Hover Dot  */}
       {hoverDot && (
@@ -134,28 +143,23 @@ export function Car({ file, props }) {
       )}
       {/* creating lines */}
       {dots.length > 1 && (
-        <Line
-          points={dots}
-          color="blue"
-          lineWidth={4}
-          dashed={false}
-          // Below fixes z-fighting
-        />
+        <Line points={dots} color="blue" lineWidth={4} dashed={false} />
       )}
-      {/* Car model */}
       <group ref={groupRef}>
         <Plane
           rotation={[-Math.PI / 2, 0, 0]}
           position={[0, -0.3, 0]}
           scale={10}
         />
+        {/* custom model */}
         {model ? (
-          <group scale={2}>
+          <group ref={dynamicRef} scale={0.2}>
             {" "}
             <primitive object={model} />{" "}
           </group>
         ) : (
           <group ref={groupRef} scale={0.013} {...props} dispose={null}>
+            {/* Car model */}
             {renderMesh(
               nodes.Lamborghini_Aventador_Body.geometry,
               materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
