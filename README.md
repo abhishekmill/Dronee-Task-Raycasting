@@ -1,12 +1,29 @@
-# React + Vite
+# 📍 Raycasting App — 3D Point Annotation Tool
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive 3D raycasting tool built with **React Three Fiber** and **three-mesh-bvh**. This app allows users to upload a 3D model, place 3D points by double-clicking on the surface, draw measurement lines, and display spatial annotations — ideal for spatial analysis, planning, or educational use.
 
-Currently, two official plugins are available:
+![Raycasting App Screenshot](./screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ✅ Upload and view `.glb` models
+- 🎯 Raycast-based point placement
+- 📏 Live 3D measurement lines between points
+- 🧭 Pivot & Gizmo controls
+- 💡 Toggleable directional & point lights
+- 🌐 Switchable environment (HDRI)
+- 📦 BVH-accelerated raycasting for fast interaction
+- ⚡ Maintains 60+ FPS on mid-range machines
+- 🧪 Leva controls for light, environment, and annotation toggling
+
+---
+
+## 🛠️ Installation
+
+```bash
+git clone https://github.com/abhishekmill/Dronee-Task-Raycasting.git)
+cd raycasting-app
+npm install
+npm run dev
