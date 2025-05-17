@@ -2,7 +2,7 @@
 
 An interactive 3D raycasting tool built with **React Three Fiber** and **three-mesh-bvh**. This app allows users to upload a 3D model, place 3D points by double-clicking on the surface, draw measurement lines, and display spatial annotations — ideal for spatial analysis, planning, or educational use.
 
-![Raycasting App Screenshot](./screenshot.PNG)
+![Raycasting App Screenshot](/screenshot.PNG)
 
 ---
 
