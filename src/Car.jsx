@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { Line, useGLTF } from "@react-three/drei";
+import { Html, Line, Plane, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 
@@ -72,66 +72,100 @@ export function Car(props) {
     />
   );
 
+  const [hidden, set] = useState();
+
   return (
     <>
       {/* Clicked Dots */}
       {dots.map((pos, i) => (
-        <mesh key={i} position={pos}>
-          <sphereGeometry args={[0.05, 8, 8]} />
-          <meshStandardMaterial color="red" />
-        </mesh>
-      ))}
+        <>
+          <mesh key={i} position={pos}>
+            <sphereGeometry args={[0.05, 8, 8]} />
+            <meshStandardMaterial color="red" />
+          </mesh>
 
-      {/* Hover Dot (Blue) */}
+          <Html
+            // occlude
+            onOcclude={set}
+            style={{
+              transition: "all 0.5s",
+              opacity: hidden ? 0 : 1,
+              transform: `scale(${hidden ? 0.5 : 1})`,
+            }}
+            center
+            distanceFactor={10}
+            position={pos}
+          >
+            <div className="w-8 h-8 rounded-full border-black border-2 bg-white">
+              <div className="flex justify-between text-center items-center px-2 ">
+                {i + 1}
+              </div>
+            </div>
+            <div className="flex flex-col text-sm ">
+              {" "}
+              <h1>X:{pos.x.toFixed(2)}</h1>
+              <h1>Y:{pos.y.toFixed(2)}</h1>
+            </div>
+          </Html>
+        </>
+      ))}
+      {/* Hover Dot  */}
       {hoverDot && (
         <mesh position={hoverDot}>
           <sphereGeometry args={[0.05, 8, 8]} />
           <meshStandardMaterial color="blue" transparent opacity={0.6} />
         </mesh>
       )}
-
+      {/* creating lines */}
       {dots.length > 1 && (
         <Line
-          points={dots.map((p) =>
-            p.clone().add(new THREE.Vector3(0, 0.001, 0))
-          )}
+          points={dots}
           color="blue"
           lineWidth={4}
+          dashed={false}
+          // Below fixes z-fighting
         />
       )}
-
       {/* Car model */}
-      <group ref={groupRef} scale={0.013} {...props} dispose={null}>
-        {renderMesh(
-          nodes.Lamborghini_Aventador_Body.geometry,
-          materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-          "body"
-        )}
-        {renderMesh(
-          nodes.Lamborghini_Aventador_Glass.geometry,
-          materials._Lamborghini_AventadorLamborghini_Aventador_GlassSG,
-          "glass"
-        )}
-        {renderMesh(
-          nodes.Lamborghini_Aventador_Wheel_FL.geometry,
-          materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-          "wheelFL"
-        )}
-        {renderMesh(
-          nodes.Lamborghini_Aventador_Wheel_FR.geometry,
-          materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-          "wheelFR"
-        )}
-        {renderMesh(
-          nodes.Lamborghini_Aventador_Wheel_RL.geometry,
-          materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-          "wheelRL"
-        )}
-        {renderMesh(
-          nodes.Lamborghini_Aventador_Wheel_RR.geometry,
-          materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-          "wheelRR"
-        )}
+      <group ref={groupRef}>
+        <Plane
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, -0.3, 0]}
+          scale={10}
+        />
+
+        <group ref={groupRef} scale={0.013} {...props} dispose={null}>
+          {renderMesh(
+            nodes.Lamborghini_Aventador_Body.geometry,
+            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+            "body"
+          )}
+          {renderMesh(
+            nodes.Lamborghini_Aventador_Glass.geometry,
+            materials._Lamborghini_AventadorLamborghini_Aventador_GlassSG,
+            "glass"
+          )}
+          {renderMesh(
+            nodes.Lamborghini_Aventador_Wheel_FL.geometry,
+            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+            "wheelFL"
+          )}
+          {renderMesh(
+            nodes.Lamborghini_Aventador_Wheel_FR.geometry,
+            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+            "wheelFR"
+          )}
+          {renderMesh(
+            nodes.Lamborghini_Aventador_Wheel_RL.geometry,
+            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+            "wheelRL"
+          )}
+          {renderMesh(
+            nodes.Lamborghini_Aventador_Wheel_RR.geometry,
+            materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
+            "wheelRR"
+          )}
+        </group>
       </group>
     </>
   );

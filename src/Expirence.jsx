@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Model from "./Model";
 import {
   Environment,
+  GizmoHelper,
   Grid,
   OrbitControls,
   Shadow,
@@ -41,6 +42,7 @@ const Expirence = () => {
           <Car />
           <Shadow scale={[5, 8, 1]} />
           <Grid infiniteGrid fadeDistance={30} />
+          <GizmoHelper />
         </Canvas>
       </div>
     </>
