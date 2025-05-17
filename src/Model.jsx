@@ -1,7 +1,6 @@
-import { Center, useGLTF } from "@react-three/drei";
+import { Center, Line, useGLTF } from "@react-three/drei";
 import React, { useState, useEffect, useRef } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-
 export default function Model({ file }) {
   const [model, setModel] = useState(null);
   const [dots, setDots] = useState([]);
@@ -18,6 +17,8 @@ export default function Model({ file }) {
         (error) => console.error("Error loading model:", error.message)
       );
     }
+
+    console.log(dots);
   }, [file]);
 
   // Default GLB
@@ -34,6 +35,14 @@ export default function Model({ file }) {
 
   return (
     <Center>
+      <Line
+        points={dots.map((p) => p.clone().add(new THREE.Vector3(0, 0.001, 0)))}
+        color="blue"
+        lineWidth={1}
+        dashed
+        dashSize={0.1}
+        gapSize={0.05}
+      />
       <group
         ref={groupRef}
         scale={1}
@@ -41,7 +50,7 @@ export default function Model({ file }) {
         castShadow
         receiveShadow
       >
-        <primitive object={modelToRender} />
+        <primitive raycast={THREE.Mesh.raycast} object={modelToRender} />
         {/* Render dots */}
         {dots.map((pos, index) => (
           <mesh key={index} position={pos}>

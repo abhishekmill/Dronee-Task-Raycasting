@@ -37,6 +37,7 @@ const Expirence = () => {
           <ambientLight intensity={0.5} />
           <Environment preset="city" />
           <OrbitControls makeDefault />
+
           <Car />
           <Shadow scale={[5, 8, 1]} />
           <Grid infiniteGrid fadeDistance={30} />

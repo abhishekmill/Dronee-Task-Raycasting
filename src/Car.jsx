@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { useGLTF } from "@react-three/drei";
+import { Line, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 
@@ -88,6 +88,16 @@ export function Car(props) {
           <sphereGeometry args={[0.05, 8, 8]} />
           <meshStandardMaterial color="blue" transparent opacity={0.6} />
         </mesh>
+      )}
+
+      {dots.length > 1 && (
+        <Line
+          points={dots.map((p) =>
+            p.clone().add(new THREE.Vector3(0, 0.001, 0))
+          )}
+          color="blue"
+          lineWidth={4}
+        />
       )}
 
       {/* Car model */}
