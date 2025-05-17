@@ -7,8 +7,4 @@ import { Mesh } from "three";
 import { acceleratedRaycast } from "three-mesh-bvh";
 
 Mesh.prototype.raycast = acceleratedRaycast;
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+createRoot(document.getElementById("root")).render(<App />);

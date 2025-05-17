@@ -4,9 +4,11 @@ import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshBVH } from "three-mesh-bvh";
+import { useControls } from "leva";
+import { Tesla } from "./Tesla";
+import { Shelf } from "./Shelf";
 
 export function Car({ file, props }) {
-  const { nodes, materials } = useGLTF("/car.glb");
   const groupRef = useRef();
   const dynamicRef = useRef();
   const { camera, gl } = useThree();
@@ -103,34 +105,32 @@ export function Car({ file, props }) {
     }
   }, [file]);
 
-  // converting standard mesh into mesh bvh
-  useEffect(() => {
-    Object.values(nodes).forEach((node) => {
-      if (node.isMesh && node.geometry) {
-        node.geometry.boundsTree = new MeshBVH(node.geometry);
-      }
-    });
-  }, [nodes]);
-
   // resetting the point array
   useEffect(() => {
     setDots([]);
   }, [model]);
 
+  const { showAnnotation } = useControls({
+    showAnnotation: {
+      value: true,
+      label: "Show showAnnotation",
+    },
+  });
   return (
     <>
       {/* Clicked Dots */}
       {dots.map((pos, i) => (
         <React.Fragment key={i}>
-          <mesh key={i} position={pos}>
-            <sphereGeometry args={[0.05, 8, 8]} />
+          <mesh scale={0.5} key={i} position={pos}>
+            <sphereGeometry args={[0.05, 16, 16]} />
             <meshStandardMaterial color="red" />
           </mesh>
 
           <Html
             onOcclude={set}
             style={{
-              transition: "all 0.5s",
+              scale: showAnnotation ? "1" : "0",
+              transition: "all 0.2s",
               opacity: hidden ? 0 : 1,
               transform: `scale(${hidden ? 0.5 : 1})`,
             }}
@@ -138,22 +138,25 @@ export function Car({ file, props }) {
             distanceFactor={10}
             position={pos}
           >
-            <div className="select-none w-8 h-8 rounded-full border-black border-2 bg-white">
-              <div className="flex justify-between text-center items-center px-2">
-                {i + 1}
+            <div className="flex bg-white rounded-full ">
+              <div className="select-none w-6 h-6 rounded-full border-black border-2 bg-white">
+                <div className="flex justify-center text-center items-center  p-1 text-[8px]">
+                  <div>{i + 1}</div>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col w-20 text-sm">
-              <h1>X: {(pos.x * 10).toFixed(2)} m</h1>
-              <h1>Y: {(pos.y * 10).toFixed(2)} m</h1>
-              <h1>Z: {(pos.z * 10).toFixed(2)} m</h1>
+              <div className="flex select-none flex-col bg-white w-12 text-left px-2 justify-between rounded-lg text-[5px]">
+                <div>X: {(pos.x * 10).toFixed(2)} m</div>
+                <div>Y: {(pos.y * 10).toFixed(2)} m</div>
+                <div>Z: {(pos.z * 10).toFixed(2)} m</div>
+              </div>
             </div>
           </Html>
         </React.Fragment>
       ))}
+
       {/* Hover Dot  */}
       {hoverDot && (
-        <mesh position={hoverDot}>
+        <mesh scale={0.5} position={hoverDot}>
           <sphereGeometry args={[0.05, 8, 8]} />
           <meshStandardMaterial color="blue" transparent opacity={0.6} />
         </mesh>
@@ -184,38 +187,11 @@ export function Car({ file, props }) {
             <primitive object={model} />{" "}
           </group>
         ) : (
-          <group ref={groupRef} scale={0.013} {...props} dispose={null}>
-            {/* Car model */}
-            {renderMesh(
-              nodes.Lamborghini_Aventador_Body.geometry,
-              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-              "body"
-            )}
-            {renderMesh(
-              nodes.Lamborghini_Aventador_Glass.geometry,
-              materials._Lamborghini_AventadorLamborghini_Aventador_GlassSG,
-              "glass"
-            )}
-            {renderMesh(
-              nodes.Lamborghini_Aventador_Wheel_FL.geometry,
-              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-              "wheelFL"
-            )}
-            {renderMesh(
-              nodes.Lamborghini_Aventador_Wheel_FR.geometry,
-              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-              "wheelFR"
-            )}
-            {renderMesh(
-              nodes.Lamborghini_Aventador_Wheel_RL.geometry,
-              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-              "wheelRL"
-            )}
-            {renderMesh(
-              nodes.Lamborghini_Aventador_Wheel_RR.geometry,
-              materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
-              "wheelRR"
-            )}
+          <group ref={groupRef} scale={1} {...props} dispose={null}>
+            <Tesla />
+            <group position={[-3, 0, 0]}>
+              <Shelf />
+            </group>
           </group>
         )}
       </group>
