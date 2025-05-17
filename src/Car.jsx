@@ -12,7 +12,7 @@ export function Car({ file, props }) {
   const { camera, gl } = useThree();
 
   const [dots, setDots] = useState([]);
-  const [hoverDot, setHoverDot] = useState(null); // 👈 hover dot state
+  const [hoverDot, setHoverDot] = useState(null); // hover dot state
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -82,6 +82,7 @@ export function Car({ file, props }) {
 
   const [model, setModel] = useState(null);
 
+  // loadeing our custom model
   useEffect(() => {
     if (file) {
       const loader = new GLTFLoader();
@@ -100,10 +101,9 @@ export function Car({ file, props }) {
         (error) => console.error("Error loading model:", error.message)
       );
     }
-
-    console.log(dots);
   }, [file]);
 
+  // converting standard mesh into mesh bvh
   useEffect(() => {
     Object.values(nodes).forEach((node) => {
       if (node.isMesh && node.geometry) {
@@ -112,6 +112,7 @@ export function Car({ file, props }) {
     });
   }, [nodes]);
 
+  // resetting the point array
   useEffect(() => {
     setDots([]);
   }, [model]);
@@ -127,7 +128,6 @@ export function Car({ file, props }) {
           </mesh>
 
           <Html
-            // occlude
             onOcclude={set}
             style={{
               transition: "all 0.5s",
@@ -138,16 +138,15 @@ export function Car({ file, props }) {
             distanceFactor={10}
             position={pos}
           >
-            <div className="w-8 h-8 rounded-full border-black border-2 bg-white">
-              <div className="flex justify-between text-center items-center px-2 ">
+            <div className="select-none w-8 h-8 rounded-full border-black border-2 bg-white">
+              <div className="flex justify-between text-center items-center px-2">
                 {i + 1}
               </div>
             </div>
-            <div className="flex flex-col text-sm ">
-              {" "}
-              <h1>X:{pos.x.toFixed(2)}</h1>
-              <h1>Y:{pos.y.toFixed(2)}</h1>
-              <h1>Z:{pos.z.toFixed(2)}</h1>
+            <div className="flex flex-col w-20 text-sm">
+              <h1>X: {(pos.x * 10).toFixed(2)} m</h1>
+              <h1>Y: {(pos.y * 10).toFixed(2)} m</h1>
+              <h1>Z: {(pos.z * 10).toFixed(2)} m</h1>
             </div>
           </Html>
         </React.Fragment>
@@ -158,6 +157,15 @@ export function Car({ file, props }) {
           <sphereGeometry args={[0.05, 8, 8]} />
           <meshStandardMaterial color="blue" transparent opacity={0.6} />
         </mesh>
+      )}
+
+      {dots.length > 0 && hoverDot && (
+        <Line
+          points={[dots[dots.length - 1], hoverDot]}
+          color="red"
+          lineWidth={4}
+          dashed={false}
+        />
       )}
       {/* creating lines */}
       {dots.length > 1 && (
