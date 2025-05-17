@@ -91,7 +91,7 @@ export function Car(props) {
       )}
 
       {/* Car model */}
-      <group ref={groupRef} scale={0.005} {...props} dispose={null}>
+      <group ref={groupRef} scale={0.013} {...props} dispose={null}>
         {renderMesh(
           nodes.Lamborghini_Aventador_Body.geometry,
           materials._Lamborghini_AventadorLamborghini_Aventador_BodySG,
