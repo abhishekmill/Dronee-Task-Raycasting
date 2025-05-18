@@ -59,7 +59,7 @@ const Experience = () => {
         </label>
       </div>
       <Canvas
-        camera={{ position: [0, 2, 5], fov: 50 }}
+        camera={{ position: [-5, 3, 6], fov: 50 }}
         dpr={window.devicePixelRatio > 1 ? 1.5 : 1}
         frameloop="demand"
         gl={{ antialias: true, powerPreference: "high-performance" }}
